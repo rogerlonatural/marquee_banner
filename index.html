@@ -13,6 +13,7 @@
        marquee {
             display: inline-block;
             width: -webkit-fill-available;
+            height: 600px;
             font-size:120px;
             font-weight: bold;
             background:black;
@@ -28,8 +29,12 @@
    </style>
 	
    <body>
-      <marquee>Hello~ 你好!</marquee>
-      <textarea></textarea>
+      <marquee 
+         onmouseover="this.stop();" 
+         onmouseout="this.start();">Hello~ 你好!</marquee>
+      <textarea 
+         rows="8"
+      ></textarea>
    </body>
 
    <script>
@@ -42,7 +47,7 @@
             // compare first click to this click and see if they occurred within double click threshold
             if (((new Date().getTime()) - touchtime) < 800) {
                   // double click occurred
-                  $("textarea").val($("marquee").html().replace("<br>","\n"));
+                  $("textarea").val($("marquee").html().replaceAll("<br>","\n"));
                   $("marquee").hide();
                   $("textarea").show();
                   $("textarea").focus();
@@ -55,9 +60,7 @@
       });      
 
       $("textarea").blur(function() {
-         let content = $.trim($("textarea").val());
-         content = content.replace("\n","<BR>");
-         $("marquee").html(content);
+         $("marquee").html($.trim($("textarea").val()).replaceAll("\n","<br>"));
          $("marquee").show();
          $("textarea").hide();
       });
