@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <title>Marquee Banner</title>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+   </head>
+   <style>
+       body {
+            margin: 0;
+            border: 0;
+       }
+       marquee {
+            display: inline-block;
+            width: -webkit-fill-available;
+            font-size:120px;
+            font-weight: bold;
+            background:black;
+            color: yellow;
+       }
+      textarea {
+         display: none;
+         margin-left: auto;
+         margin-right: auto;
+         max-width: 100%;
+         width: 80%;
+      }
+   </style>
+	
+   <body>
+      <marquee>Hello~ 你好!</marquee>
+      <textarea></textarea>
+   </body>
+
+   <script>
+      var touchtime = 0;
+      $("marquee").on("click", function() {
+         if (touchtime == 0) {
+            // set first click
+            touchtime = new Date().getTime();
+         } else {
+            // compare first click to this click and see if they occurred within double click threshold
+            if (((new Date().getTime()) - touchtime) < 800) {
+                  // double click occurred
+                  $("textarea").val($("marquee").html().replace("<br>","\n"));
+                  $("marquee").hide();
+                  $("textarea").show();
+                  $("textarea").focus();
+                  touchtime = 0;
+            } else {
+                  // not a double click so set as a new first click
+                  touchtime = new Date().getTime();
+            }
+         }
+      });      
+
+      $("textarea").blur(function() {
+         let content = $.trim($("textarea").val());
+         content = content.replace("\n","<BR>");
+         $("marquee").html(content);
+         $("marquee").show();
+         $("textarea").hide();
+      });
+   </script>
+</html>
