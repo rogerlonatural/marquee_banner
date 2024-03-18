@@ -10,15 +10,6 @@
             margin: 0;
             border: 0;
        }
-       marquee {
-            display: inline-block;
-            width: -webkit-fill-available;
-            height: 600px;
-            font-size:120px;
-            font-weight: bold;
-            background:black;
-            color: yellow;
-       }
       textarea {
          display: none;
          margin-left: auto;
@@ -26,12 +17,49 @@
          max-width: 100%;
          width: 80%;
       }
+      .marquee-container {
+         width: 100%;
+         overflow: hidden;
+         background:black;
+      }
+      .marquee-content {
+         display: inline-block;
+         white-space: nowrap;
+         height: 600px;
+         font-size:120px;
+         font-weight: bold;
+         background:black;
+         color: yellow;
+      }
+      .marquee-animated{
+         animation: marquee 10s linear infinite;
+         -webkit-animation: marquee 10s linear infinite;
+      }      
+      .marquee-paused{
+         -webkit-animation-play-state:paused;
+         -moz-animation-play-state:paused;
+         -o-animation-play-state:paused;
+         animation-play-state:paused;
+         cursor: pointer;
+      }
+
+      @keyframes marquee {
+         0% {
+            transform: translateX(0);
+         }
+         100% {
+            transform: translateX(-100%);
+         }
+      }      
    </style>
 	
    <body>
-      <marquee 
-         onmouseover="this.stop();" 
-         onmouseout="this.start();">Hello~ 你好!</marquee>
+      <div class="marquee-container">
+         <div class="marquee-content marquee-animation">
+           Hello ~~ 你好!!!
+         </div>
+       </div>
+
       <textarea 
          rows="8"
       ></textarea>
@@ -39,29 +67,32 @@
 
    <script>
       var touchtime = 0;
-      $("marquee").on("click", function() {
+      $(".marquee-container").on("click", function() {
          if (touchtime == 0) {
             // set first click
+            $(".marquee-animation").toggleClass("marquee-paused")
             touchtime = new Date().getTime();
          } else {
             // compare first click to this click and see if they occurred within double click threshold
             if (((new Date().getTime()) - touchtime) < 800) {
                   // double click occurred
-                  $("textarea").val($("marquee").html().replaceAll("<br>","\n"));
-                  $("marquee").hide();
+                  $(".marquee-animation").toggleClass("marquee-animated");
+                  $("textarea").val($(".marquee-content").html().replaceAll("<br>","\n"));
+                  $(".marquee-container").hide();
                   $("textarea").show();
                   $("textarea").focus();
                   touchtime = 0;
             } else {
                   // not a double click so set as a new first click
+                  $(".marquee-animation").toggleClass("marquee-paused");
                   touchtime = new Date().getTime();
             }
          }
       });      
 
       $("textarea").blur(function() {
-         $("marquee").html($.trim($("textarea").val()).replaceAll("\n","<br>"));
-         $("marquee").show();
+         $(".marquee-content").html($.trim($("textarea").val()).replaceAll("\n","<br>"));
+         $(".marquee-container").show();
          $("textarea").hide();
       });
    </script>
