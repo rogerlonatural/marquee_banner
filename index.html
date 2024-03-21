@@ -2,6 +2,7 @@
 <html lang="en">
    <head>
       <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
       <title>Marquee Banner</title>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
    </head>
@@ -18,19 +19,25 @@
          width: 80%;
       }
       .marquee-container {
-         width: 100%;
+         width: -webkit-fill-available;
          overflow: hidden;
          background:black;
          padding: 30px;
+         margin: 0 auto; /* Auto margin on both sides */
+         display: flex ;
+			overflow: hidden ;
+			white-space: nowrap ;
       }
       .marquee-content {
          display: inline-block;
-         white-space: nowrap;
-         height: 600px;
+         height: 1000px;
          font-size:120px;
          font-weight: bold;
          background:black;
          color: yellow;
+         text-align: center;
+         width: 100%;
+         overflow-y: auto;
       }
       .marquee-animated{
          animation: marquee 10s linear infinite;
@@ -43,30 +50,46 @@
          animation-play-state:paused;
          cursor: pointer;
       }
-
       @keyframes marquee {
-         0% {
-            transform: translateX(0);
-         }
-         100% {
-            transform: translateX(-100%);
-         }
-      }      
+         0% { transform: translateX(20%); }
+         50% { transform: translateX(-20%); }
+         100% { transform: translateX(20%); }
+      }
+
    </style>
 	
    <body>
       <div class="marquee-container">
-         <div class="marquee-content marquee-animation">
-           Hello ~~ 你好!!!
-         </div>
+         <div class="marquee-content marquee-animation">Hello ~~ 你好!😊</div>
        </div>
-
-      <textarea 
-         rows="8"
-      ></textarea>
+      <textarea rows="8"></textarea>
    </body>
 
    <script>
+      function wrapWords(input) {
+         let output = '';
+         let lineLength = 0;
+
+         for (let i = 0; i < input.length; i++) {
+            const char = input[i];
+            const charLength = char.charCodeAt(0) > 127 ? 2 : 1; // 判斷字符長度
+
+            // 檢查是否需要換行
+            if (lineLength + charLength >= 16 || char === '\n') {
+                  output += '<br>';
+                  lineLength = 0;
+            }
+
+            // 如果是換行字符，則不將它加到輸出字符串中
+            if (char !== '\n') {
+                  output += char;
+                  lineLength += charLength;
+            }
+         }
+
+         return output;
+      }
+
       var touchtime = 0;
       $(".marquee-container").on("click", function() {
          if (touchtime == 0) {
@@ -92,9 +115,10 @@
       });      
 
       $("textarea").blur(function() {
-         $(".marquee-content").html($.trim($("textarea").val()).replaceAll("\n","<br>"));
+         $(".marquee-content").html(wrapWords($.trim($("textarea").val())));
          $(".marquee-container").show();
          $("textarea").hide();
+         touchtime = new Date().getTime();
       });
    </script>
 </html>
