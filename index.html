@@ -13,25 +13,24 @@
        }
       textarea {
          display: none;
+         margin-top: 180px;
          margin-left: auto;
          margin-right: auto;
          max-width: 100%;
          width: 80%;
       }
       .marquee-container {
-         width: -webkit-fill-available;
+         width: 100vw;
          overflow: hidden;
          background:black;
          padding: 30px;
          margin: 0 auto; /* Auto margin on both sides */
          display: flex ;
-			overflow: hidden ;
-			white-space: nowrap ;
       }
       .marquee-content {
          display: inline-block;
-         height: 1000px;
-         font-size:120px;
+         height: 75vh;
+         font-size:48px;
          font-weight: bold;
          background:black;
          color: yellow;
@@ -51,18 +50,19 @@
          cursor: pointer;
       }
       @keyframes marquee {
-         0% { transform: translateX(20%); }
-         50% { transform: translateX(-20%); }
-         100% { transform: translateX(20%); }
+         0% { transform: translateX(-10%); }
+         50% { transform: translateX(10%); }
+         100% { transform: translateX(-10%); }
       }
 
    </style>
 	
    <body>
       <div class="marquee-container">
-         <div class="marquee-content marquee-animation">Hello ~~ 你好!😊</div>
-       </div>
-      <textarea rows="8"></textarea>
+         <div class="marquee-content marquee-animation">Hello ~ 你好!😊</div>
+      </div>
+      <textarea rows="12"></textarea>
+      
    </body>
 
    <script>
@@ -72,16 +72,34 @@
 
          for (let i = 0; i < input.length; i++) {
             const char = input[i];
-            const charLength = char.charCodeAt(0) > 127 ? 2 : 1; // 判斷字符長度
+            const nextChar = input[i + 1] || '';
 
-            // 檢查是否需要換行
-            if (lineLength + charLength >= 16 || char === '\n') {
+            // 處理換行字符
+            if (char === '\n') {
                   output += '<br>';
                   lineLength = 0;
+                  continue;
             }
 
-            // 如果是換行字符，則不將它加到輸出字符串中
-            if (char !== '\n') {
+            // 檢查是否為emoji，假定emoji由兩個字符組成
+            if (/[\uD800-\uDBFF][\uDC00-\uDFFF]/.test(char + nextChar)) {
+                  if (lineLength + 2 > 16) {
+                     output += '<br>';
+                     lineLength = 0;
+                  }
+
+                  output += char + nextChar;
+                  lineLength += 2;
+                  i++; // 跳過下一個字符，因為已經處理了emoji
+            } else {
+                  // 計算字符長度，ASCII為1，其他為2
+                  const charLength = char.charCodeAt(0) > 127 ? 2 : 1;
+
+                  if (lineLength + charLength > 16) {
+                     output += '<br>';
+                     lineLength = 0;
+                  }
+
                   output += char;
                   lineLength += charLength;
             }
@@ -89,6 +107,8 @@
 
          return output;
       }
+
+
 
       var touchtime = 0;
       $(".marquee-container").on("click", function() {
