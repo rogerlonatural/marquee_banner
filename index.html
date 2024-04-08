@@ -13,12 +13,21 @@
          font-family: "Microsoft YaHei", "SimSun", "FangSong", sans-serif;
        }
       textarea {
-         display: none;
-         margin-top: 180px;
+         margin-top: 120px;
          margin-left: auto;
          margin-right: auto;
          max-width: 100%;
          width: 80%;
+      }
+      .editor {
+         display: none;
+         margin: 0 auto;
+         text-align: center;
+         background-color: black;
+         height: 100vh;
+      }
+      .btn {
+         font-size: 60px;
       }
       .marquee-container {
          width: 100vw;
@@ -30,7 +39,7 @@
       }
       .marquee-content {
          display: inline-block;
-         height: 75vh;
+         height: 100vh;
          font-size:48px;
          font-weight: normal;
          background:black;
@@ -51,9 +60,9 @@
          cursor: pointer;
       }
       @keyframes marquee {
-         0% { transform: translateX(-10%); }
-         50% { transform: translateX(10%); }
-         100% { transform: translateX(-10%); }
+         0% { transform: translateX(-15%); }
+         50% { transform: translateX(5%); }
+         100% { transform: translateX(-15%); }
       }
 
    </style>
@@ -62,8 +71,13 @@
       <div class="marquee-container">
          <div class="marquee-content marquee-animation">Hello ~ 你好!😊</div>
       </div>
-      <textarea rows="12"></textarea>
-      
+      <div class="editor">
+         <textarea rows="15"></textarea>
+         <div>
+            <span class="btn reset">🔄</span>
+            <span class="btn update">✅</span>
+         </div>
+      </div>
    </body>
 
    <script>
@@ -119,12 +133,12 @@
             touchtime = new Date().getTime();
          } else {
             // compare first click to this click and see if they occurred within double click threshold
-            if (((new Date().getTime()) - touchtime) < 800) {
+            if (((new Date().getTime()) - touchtime) < 1000) {
                   // double click occurred
                   $(".marquee-animation").toggleClass("marquee-animated");
                   $("textarea").val($(".marquee-content").html().replaceAll("<br>","\n"));
                   $(".marquee-container").hide();
-                  $("textarea").show();
+                  $(".editor").show();
                   $("textarea").focus();
                   touchtime = 0;
             } else {
@@ -135,11 +149,18 @@
          }
       });      
 
-      $("textarea").blur(function() {
+
+      $(".reset").click(function () {
+         $("textarea").val("");
+         $("textarea").focus();
+         touchtime = new Date().getTime();
+      })
+
+      $(".update").click(function () {
          $(".marquee-content").html(wrapWords($.trim($("textarea").val())));
          $(".marquee-container").show();
-         $("textarea").hide();
+         $(".editor").hide();
          touchtime = new Date().getTime();
-      });
+      })
    </script>
 </html>
